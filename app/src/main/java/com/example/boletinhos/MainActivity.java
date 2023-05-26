@@ -3,15 +3,23 @@ package com.example.boletinhos;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.example.boletinhos.utils.Globais;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText    edRa;
     private EditText    edNome;
     private Spinner     spDisciplinas;
+    private String      disciplinaSelec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +31,27 @@ public class MainActivity extends AppCompatActivity {
         spDisciplinas = findViewById(R.id.spDisciplina);
 
         String[] vetorDisciplinas = new String[]{"","Programação P/ Disp. Móveis"};
+
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
+                vetorDisciplinas);
+
+        spDisciplinas.setAdapter(adapter);
+
+        spDisciplinas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                disciplinaSelec = (String) spDisciplinas.getItemAtPosition(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        if (Globais.listaAlunos == null) {
+            Globais.listaAlunos = new ArrayList<>();
+        }
 
     }
 }
