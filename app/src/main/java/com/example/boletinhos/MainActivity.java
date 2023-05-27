@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private Spinner     spDisciplinas;
     private String      disciplinaSelec;
 
+    private Spinner     spBimestres;
+
+    private String      bimestreSelec;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
         edNome = findViewById(R.id.edNome);
         spDisciplinas = findViewById(R.id.spDisciplina);
 
-        String[] vetorDisciplinas = new String[]{"","Programação P/ Disp. Móveis"};
+        String[] vetorDisciplinas   = new String[]{"","Programação P/ Disp. Móveis"};
+        String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
 
         ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
                 vetorDisciplinas);
@@ -41,6 +46,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 disciplinaSelec = (String) spDisciplinas.getItemAtPosition(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spBimestres.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                bimestreSelec = (String) spBimestres.getItemAtPosition(i);
             }
 
             @Override

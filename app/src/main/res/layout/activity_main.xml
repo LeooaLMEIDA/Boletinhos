@@ -30,10 +30,41 @@
         android:id="@+id/edNome"
         android:hint="Informe o Nome"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="DISCIPLINA"
+        android:textSize="12dp"
+        android:gravity="left"
+        android:textStyle="bold"/>
+
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spDisciplina"
         android:layout_marginBottom="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <EditText
+            android:layout_width="160dp"
+            android:layout_height="50dp"
+            android:id="@+id/edNota"
+            android:hint="Informe a Nota"
+            android:layout_margin="10dp"/>
+
+        <Spinner
+            android:layout_width="210dp"
+            android:layout_height="50dp"
+            android:id="@+id/spBimestre"
+            android:autofillHints="name"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
