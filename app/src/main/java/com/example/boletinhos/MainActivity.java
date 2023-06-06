@@ -10,20 +10,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.boletinhos.models.Aluno;
+import com.example.boletinhos.models.Disciplina;
 import com.example.boletinhos.utils.Globais;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText    edRa;
-    private EditText    edNome;
-    private Spinner     spDisciplinas;
-    private String      disciplinaSelec;
+    private EditText            edRa;
+    private EditText            edNome;
+    private Spinner             spDisciplinas;
+    private EditText            edNota;
+    private Spinner             spBimestre;
+    private Button              btAdicionar;
+    private Button              btVerNotas;
+    private Button              btVerMedias;
 
-    private Spinner     spBimestres;
+    private ArrayList<Aluno>    alunos = new ArrayList<>();
+    private Disciplina          disciplinaSelec =new Disciplina();
+    private Integer             posDisciplina=-1;
 
-    private String      bimestreSelec;
+    private Spinner             spBimestres;
+
+    private String              bimestreSelec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +43,52 @@ public class MainActivity extends AppCompatActivity {
         edRa = findViewById(R.id.edRa);
         edNome = findViewById(R.id.edNome);
         spDisciplinas = findViewById(R.id.spDisciplina);
+        edNota = findViewById(R.id.edNota);
+        spBimestre = findViewById(R.id.spBimestre);
+        btAdicionar = findViewById(R.id.btAdicionar);
+        btVerNotas = findViewById(R.id.btVerNotas);
+        btVerMedias = findViewById(R.id.btVerMedias);
+
+        if (Globais.listaAlunos == null) {
+            Globais.listaAlunos = new ArrayList<>();
+        }
+
+        Aluno aluno = new Aluno();
 
         String[] vetorDisciplinas   = new String[]{"","Programação P/ Disp. Móveis"};
         String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
 
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
+        ArrayAdapter adapterDisciplinas = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
                 vetorDisciplinas);
 
-        spDisciplinas.setAdapter(adapter);
+        spDisciplinas.setAdapter(adapterDisciplinas);
+
+        ArrayAdapter adapterBimestres = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
+                vetorBimestres);
+
+        spBimestre.setAdapter(adapterBimestres);
 
         spDisciplinas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                disciplinaSelec = (String) spDisciplinas.getItemAtPosition(i);
+                boolean naoVazio = !((String) spDisciplinas.getItemAtPosition(i)).equals("");
+
+                if (naoVazio){
+                    disciplinaSelec = null;
+                    for (Disciplina disciplina:aluno.getDisciplinas()) {
+                        if (disciplina.getDisciplina().equals((String) spDisciplinas.getItemAtPosition(i))){
+                            disciplinaSelec = disciplina;
+                            break;
+                        }
+                    }
+                    if (disciplinaSelec == null){
+                        disciplinaSelec = new Disciplina((String) spDisciplinas.getItemAtPosition(i));
+                        aluno.getDisciplinas().add(disciplinaSelec);
+                    }
+                    posDisciplina = i;
+                } else if (posDisciplina >= 0) {
+                    spDisciplinas.setSelection(posDisciplina);
+                }
             }
 
             @Override
@@ -66,9 +109,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (Globais.listaAlunos == null) {
-            Globais.listaAlunos = new ArrayList<>();
-        }
+
 
     }
 }

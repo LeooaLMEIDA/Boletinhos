@@ -1,11 +1,12 @@
 package com.example.boletinhos.models;
 
+import java.util.ArrayList;
+
 public class Aluno {
 
-    private int     ra;
-    private String  nome;
-    private String  disciplinas;
-    private Double  notas;
+    private int                     ra;
+    private String                  nome;
+    private ArrayList<Disciplina>   disciplinas = new ArrayList<>();
 
     public int getRa() {
         return ra;
@@ -23,21 +24,11 @@ public class Aluno {
         this.nome = nome;
     }
 
-    public String getDisciplinas() {
+    public ArrayList<Disciplina> getDisciplinas() {
         return disciplinas;
     }
 
-    public void setDisciplinas(String disciplinas) {
+    public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
         this.disciplinas = disciplinas;
     }
-
-    public Double getNotas() {
-        return notas;
-    }
-
-    public void setNotas(Double notas) {
-        this.notas = notas;
-    }
-
-
 }
