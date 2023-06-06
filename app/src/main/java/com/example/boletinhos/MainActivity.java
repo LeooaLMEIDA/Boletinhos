@@ -28,12 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private Button              btVerMedias;
 
     private ArrayList<Aluno>    alunos = new ArrayList<>();
-    private Disciplina          disciplinaSelec =new Disciplina();
-    private Integer             posDisciplina=-1;
-
-    private Spinner             spBimestres;
-
-    private String              bimestreSelec;
+    private Disciplina          disciplinaSelec = new Disciplina();
+    private Integer             posDisciplina = -1;
+    private Integer             bimestreSelec = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +94,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        spBimestres.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spBimestre.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                bimestreSelec = (String) spBimestres.getItemAtPosition(i);
+                String bimestre = (String) spBimestre.getItemAtPosition(i);
+
+                if (!bimestre.trim().equals("")){
+                    switch (bimestre){
+                        case "1° Bimestre":
+                            bimestreSelec = 0;
+                            break;
+                        case "2° Bimestre":
+                            bimestreSelec = 1;
+                            break;
+                        case "3° Bimestre":
+                            bimestreSelec = 2;
+                            break;
+                        case "4° Bimestre":
+                            bimestreSelec = 3;
+                            break;
+                    }
+                } else {
+                    spBimestre.setSelection(bimestreSelec+1);
+                }
+                System.out.println(bimestreSelec);
             }
 
             @Override
