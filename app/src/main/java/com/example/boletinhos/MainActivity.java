@@ -3,12 +3,15 @@ package com.example.boletinhos;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.boletinhos.models.Aluno;
 import com.example.boletinhos.models.Disciplina;
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Disciplina          disciplinaSelec = new Disciplina();
     private Integer             posDisciplina = -1;
     private Integer             bimestreSelec = -1;
-
+    private Aluno               aluno = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
             Globais.listaAlunos = new ArrayList<>();
         }
 
-        Aluno aluno = new Aluno();
+        if (aluno == null){
+            aluno = new Aluno();
+        }
 
         String[] vetorDisciplinas   = new String[]{"","Programação P/ Disp. Móveis"};
         String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
@@ -126,6 +131,162 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        edRa.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String strRa = edRa.getText().toString().trim();
+
+                if (!strRa.equals("")){
+                    Integer intRa = Integer.parseInt(strRa);
+                    if (!edNome.isEnabled()){
+                        edNome.setText("");
+                    }
+                    edNome.setEnabled(true);
+                    for (Aluno auxAluno:alunos) {
+                        if (auxAluno.getRa() == intRa){
+                            aluno = auxAluno;
+                            edNome.setText(aluno.getNome());
+                            edNome.setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String strRa = edRa.getText().toString().trim();
+
+                if (!strRa.equals("")){
+                    Integer intRa = Integer.parseInt(strRa);
+                    if (!edNome.isEnabled()){
+                        edNome.setText("");
+                    }
+                    edNome.setEnabled(true);
+                    for (Aluno auxAluno:alunos) {
+                        if (auxAluno.getRa() == intRa){
+                            aluno = auxAluno;
+                            edNome.setText(aluno.getNome());
+                            edNome.setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String strRa = edRa.getText().toString().trim();
+
+                if (!strRa.equals("")){
+                    Integer intRa = Integer.parseInt(strRa);
+                    if (!edNome.isEnabled()){
+                        edNome.setText("");
+                    }
+                    edNome.setEnabled(true);
+                    for (Aluno auxAluno:alunos) {
+                        if (auxAluno.getRa() == intRa){
+                            aluno = auxAluno;
+                            edNome.setText(aluno.getNome());
+                            edNome.setEnabled(false);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+
+        edNota.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!edNota.getText().toString().equals("")) {
+                    if (Integer.parseInt(edNota.getText().toString()) < 0 || Integer.parseInt(edNota.getText().toString()) > 10) {
+                        edNota.setError("Informe uma Nota válida para adicionar!");
+                        edNota.setText("0");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        btAdicionar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strRa = edRa.getText().toString();
+                String strNome = edNome.getText().toString();
+                String strNota = edNota.getText().toString();
+
+                if (
+                        !strRa.equals("") &&
+                        !strNome.equals("") &&
+                        !strNota.equals("") &&
+                        posDisciplina > 0 &&
+                        bimestreSelec >= 0
+                ){
+                    if (Double.parseDouble(edNota.getText().toString()) >= 0 && Double.parseDouble(edNota.getText().toString()) <= 10) {
+                        aluno.setRa(Integer.parseInt(strRa));
+                        aluno.setNome(strNome);
+
+                        boolean achou = false;
+
+                        for (Disciplina auxDisciplina : aluno.getDisciplinas()) {
+                            if (auxDisciplina.getDisciplina().equals(disciplinaSelec.getDisciplina())) {
+                                achou = true;
+                                break;
+                            }
+                        }
+
+                        if (!achou) {
+                            aluno.getDisciplinas().add(disciplinaSelec);
+                        }
+
+                        disciplinaSelec.getNotas()[bimestreSelec] = Double.parseDouble(edNota.getText().toString());
+
+                        alunos.add(aluno);
+                        aluno = new Aluno();
+
+                        edRa.setText("");
+                        edNome.setText("");
+                        spDisciplinas.setSelection(0);
+                        edNota.setText("");
+                        spBimestre.setSelection(0);
+
+                        disciplinaSelec = new Disciplina();
+                        posDisciplina = -1;
+                        bimestreSelec = -1;
+
+                    } else {
+                        edNota.setError("Informe uma Nota válida para adicionar!");
+                    }
+
+                } else {
+                    if (strRa.equals("")){
+                        edRa.setError("Informe um RA válido para adicionar!");
+                    }
+                    if (strNome.equals("")){
+                        edNome.setError("Informe um Nome válido para adicionar!");
+                    }
+                    if (strNota.equals("")){
+                        edNota.setError("Informe uma Nota válida para adicionar!");
+                    }
+                    if (posDisciplina <= 0){
+                        Toast.makeText(MainActivity.this,"Informe uma Disciplina válida para adicionar!",Toast.LENGTH_SHORT);
+                    }
+                    if (posDisciplina < 0){
+                        Toast.makeText(MainActivity.this,"Informe um Bimestre válido para adicionar!",Toast.LENGTH_SHORT);
+                    }
+                }
+
+
+            }
+        });
 
 
     }
