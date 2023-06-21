@@ -31,4 +31,13 @@ public class Aluno {
     public void setDisciplinas(ArrayList<Disciplina> disciplinas) {
         this.disciplinas = disciplinas;
     }
+
+    @Override
+    public String toString() {
+        return "Aluno{" +
+                "ra=" + ra +
+                ", nome='" + nome + '\'' +
+                ", disciplinas=" + disciplinas +
+                '}';
+    }
 }

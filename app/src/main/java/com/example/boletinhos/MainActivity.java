@@ -2,6 +2,7 @@ package com.example.boletinhos;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.boletinhos.adapters.AlunoAdapter;
 import com.example.boletinhos.models.Aluno;
 import com.example.boletinhos.models.Disciplina;
 import com.example.boletinhos.utils.Globais;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer             posDisciplina = -1;
     private Integer             bimestreSelec = -1;
     private Aluno               aluno = null;
+    private AlunoAdapter        alunoAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,16 +52,30 @@ public class MainActivity extends AppCompatActivity {
         btVerNotas = findViewById(R.id.btVerNotas);
         btVerMedias = findViewById(R.id.btVerMedias);
 
+
+
         if (Globais.listaAlunos == null) {
             Globais.listaAlunos = new ArrayList<>();
+        }
+
+        if (alunos.size() == 0){
+            alunoAdapter = new AlunoAdapter(MainActivity.this, Globais.listaAlunos);
         }
 
         if (aluno == null){
             aluno = new Aluno();
         }
 
-        String[] vetorDisciplinas   = new String[]{"","Programação P/ Disp. Móveis"};
         String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
+        String[] vetorDisciplinas   = new String[]{"",  "Empreendedorismo",
+                                                        "Relacoes interpessoais",
+                                                        "Projeto Integrador",
+                                                        "Desenvolvimento Frameworks",
+                                                        "Gerencia de projetos",
+                                                        "Qualidade de software",
+                                                        "Mobile",
+                                                        "Estagio",
+                                                        "Desenvolvimento Web"};
 
         ArrayAdapter adapterDisciplinas = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
                 vetorDisciplinas);
@@ -122,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     spBimestre.setSelection(bimestreSelec+1);
                 }
-                System.out.println(bimestreSelec);
             }
 
             @Override
@@ -249,9 +265,21 @@ public class MainActivity extends AppCompatActivity {
 
                         disciplinaSelec.getNotas()[bimestreSelec] = Double.parseDouble(edNota.getText().toString());
 
-                        alunos.add(aluno);
-                        aluno = new Aluno();
+                        achou = false;
 
+                        for (Aluno auxAluno:alunos) {
+                            if (auxAluno.getRa() == aluno.getRa()){
+                                achou = true;
+                            }
+                        }
+
+                        if (!achou){
+                            alunos.add(aluno);
+                            Globais.listaAlunos.add(aluno);
+                        }
+
+                        aluno = new Aluno();
+                        System.out.println(alunos.size());
                         edRa.setText("");
                         edNome.setText("");
                         spDisciplinas.setSelection(0);
@@ -288,6 +316,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btVerNotas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirListaAlunos();
+            }
+        });
+
+    }
+
+    private void abrirListaAlunos(){
+        Intent intent = new Intent(this,
+                RelacaoNotasActivity.class);
+
+        startActivity(intent);
 
     }
 }
