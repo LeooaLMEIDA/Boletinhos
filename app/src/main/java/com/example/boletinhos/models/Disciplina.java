@@ -26,4 +26,8 @@ public class Disciplina {
     public void setNotas(Double[] notas) {
         this.notas = notas;
     }
+
+    public Double calculaMedia(){
+        return (notas[0] + notas[1] + notas[2] + notas[3]) / 4;
+    }
 }

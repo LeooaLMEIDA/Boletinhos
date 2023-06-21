@@ -32,11 +32,21 @@ public class MainActivity extends AppCompatActivity {
     private Button              btVerNotas;
     private Button              btVerMedias;
 
+    private String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
+    private String[] vetorDisciplinas   = new String[]{"",  "Empreendedorismo",
+            "Relacoes interpessoais",
+            "Projeto Integrador",
+            "Desenvolvimento Frameworks",
+            "Gerencia de projetos",
+            "Qualidade de software",
+            "Mobile",
+            "Estagio",
+            "Desenvolvimento Web"};
     private ArrayList<Aluno>    alunos = new ArrayList<>();
     private Disciplina          disciplinaSelec = new Disciplina();
     private Integer             posDisciplina = -1;
     private Integer             bimestreSelec = -1;
-    private Aluno               aluno = null;
+    private Aluno               aluno = new Aluno();
     private AlunoAdapter        alunoAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,30 +62,9 @@ public class MainActivity extends AppCompatActivity {
         btVerNotas = findViewById(R.id.btVerNotas);
         btVerMedias = findViewById(R.id.btVerMedias);
 
-
-
-        if (Globais.listaAlunos == null) {
-            Globais.listaAlunos = new ArrayList<>();
-        }
-
         if (alunos.size() == 0){
             alunoAdapter = new AlunoAdapter(MainActivity.this, Globais.listaAlunos);
         }
-
-        if (aluno == null){
-            aluno = new Aluno();
-        }
-
-        String[] vetorBimestres     = new String[]{"","1° Bimestre","2° Bimestre","3° Bimestre","4° Bimestre"};
-        String[] vetorDisciplinas   = new String[]{"",  "Empreendedorismo",
-                                                        "Relacoes interpessoais",
-                                                        "Projeto Integrador",
-                                                        "Desenvolvimento Frameworks",
-                                                        "Gerencia de projetos",
-                                                        "Qualidade de software",
-                                                        "Mobile",
-                                                        "Estagio",
-                                                        "Desenvolvimento Web"};
 
         ArrayAdapter adapterDisciplinas = new ArrayAdapter(this,android.R.layout.simple_list_item_1,
                 vetorDisciplinas);
@@ -150,41 +139,25 @@ public class MainActivity extends AppCompatActivity {
         edRa.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                String strRa = edRa.getText().toString().trim();
-
-                if (!strRa.equals("")){
-                    Integer intRa = Integer.parseInt(strRa);
-                    if (!edNome.isEnabled()){
-                        edNome.setText("");
-                    }
-                    edNome.setEnabled(true);
-                    for (Aluno auxAluno:alunos) {
-                        if (auxAluno.getRa() == intRa){
-                            aluno = auxAluno;
-                            edNome.setText(aluno.getNome());
-                            edNome.setEnabled(false);
-                            break;
-                        }
-                    }
-                }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String strRa = edRa.getText().toString().trim();
 
-                if (!strRa.equals("")){
+                if (!strRa.equals("") && Globais.listaAlunos != null){
                     Integer intRa = Integer.parseInt(strRa);
                     if (!edNome.isEnabled()){
                         edNome.setText("");
                     }
                     edNome.setEnabled(true);
-                    for (Aluno auxAluno:alunos) {
-                        if (auxAluno.getRa() == intRa){
-                            aluno = auxAluno;
+
+                    for (Aluno aluno : Globais.listaAlunos) {
+                        System.out.println(aluno.getRa());
+                        System.out.println(edRa.getText().toString());
+                        if (String.valueOf(aluno.getRa()).equals(edRa.getText().toString())){
                             edNome.setText(aluno.getNome());
                             edNome.setEnabled(false);
-                            break;
                         }
                     }
                 }
@@ -192,23 +165,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String strRa = edRa.getText().toString().trim();
-
-                if (!strRa.equals("")){
-                    Integer intRa = Integer.parseInt(strRa);
-                    if (!edNome.isEnabled()){
-                        edNome.setText("");
-                    }
-                    edNome.setEnabled(true);
-                    for (Aluno auxAluno:alunos) {
-                        if (auxAluno.getRa() == intRa){
-                            aluno = auxAluno;
-                            edNome.setText(aluno.getNome());
-                            edNome.setEnabled(false);
-                            break;
-                        }
-                    }
-                }
             }
         });
 
@@ -247,9 +203,27 @@ public class MainActivity extends AppCompatActivity {
                         bimestreSelec >= 0
                 ){
                     if (Double.parseDouble(edNota.getText().toString()) >= 0 && Double.parseDouble(edNota.getText().toString()) <= 10) {
+                        if (Globais.listaAlunos == null) {
+                            Globais.listaAlunos = new ArrayList<>();
+                        }
+
+                        Aluno alunoSelecionado = new Aluno();
+                        for(int i = 0; i < Globais.listaAlunos.size(); i++){
+                            if(edRa.getText().toString().equals(Globais.listaAlunos.get(i).getRa())){
+                                alunoSelecionado = Globais.listaAlunos.get(i);
+                            }
+                        }
+                        Aluno aluno = new Aluno();
+                        if(!String.valueOf(alunoSelecionado.getRa()).equals("")){
+                            Globais.listaAlunos.remove(alunoSelecionado);
+                            aluno = alunoSelecionado;
+                        }else{
+                            aluno.setRa(Integer.parseInt(edRa.getText().toString()));
+                            aluno.setNome(edNome.getText().toString());
+                        }
+
                         aluno.setRa(Integer.parseInt(strRa));
                         aluno.setNome(strNome);
-
                         boolean achou = false;
 
                         for (Disciplina auxDisciplina : aluno.getDisciplinas()) {
@@ -278,8 +252,13 @@ public class MainActivity extends AppCompatActivity {
                             Globais.listaAlunos.add(aluno);
                         }
 
+                        Toast.makeText(MainActivity.this, "A nota da disciplina " +
+                                disciplinaSelec.getDisciplina() + " do aluno " +
+                                aluno.getNome() + " foi adicionada com sucesso!", Toast.LENGTH_SHORT).show();
+
                         aluno = new Aluno();
                         System.out.println(alunos.size());
+                        System.out.println(Globais.listaAlunos.size());
                         edRa.setText("");
                         edNome.setText("");
                         spDisciplinas.setSelection(0);
@@ -305,10 +284,10 @@ public class MainActivity extends AppCompatActivity {
                         edNota.setError("Informe uma Nota válida para adicionar!");
                     }
                     if (posDisciplina <= 0){
-                        Toast.makeText(MainActivity.this,"Informe uma Disciplina válida para adicionar!",Toast.LENGTH_SHORT);
+                        Toast.makeText(MainActivity.this,"Informe uma Disciplina válida para adicionar!",Toast.LENGTH_SHORT).show();
                     }
                     if (posDisciplina < 0){
-                        Toast.makeText(MainActivity.this,"Informe um Bimestre válido para adicionar!",Toast.LENGTH_SHORT);
+                        Toast.makeText(MainActivity.this,"Informe um Bimestre válido para adicionar!",Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -323,11 +302,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btVerMedias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirListaMedias();
+            }
+        });
+
     }
 
     private void abrirListaAlunos(){
         Intent intent = new Intent(this,
                 RelacaoNotasActivity.class);
+
+        startActivity(intent);
+
+    }
+
+    private void abrirListaMedias(){
+        Intent intent = new Intent(this,
+                RelacaoMediasActivity.class);
 
         startActivity(intent);
 

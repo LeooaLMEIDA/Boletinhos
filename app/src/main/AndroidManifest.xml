@@ -12,6 +12,15 @@
         android:theme="@style/Theme.Boletinhos"
         tools:targetApi="31">
         <activity
+            android:name=".RelacaoMediasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MediasAlunosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotasActivity"
+            android:exported="false" />
+        <activity
             android:name=".RelacaoNotasActivity"
             android:exported="false" />
         <activity
